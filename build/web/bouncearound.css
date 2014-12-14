@@ -24,4 +24,15 @@ h1, p {
   left: 11;
   top: 11;
   background: radial-gradient(circle at 100px 100px, #5cabff, #000);
+  transform: rotate(270deg);
+  
+  animation-name: spinBall; 
+  animation-duration: 3s; /* 3 seconds */
+  animation-iteration-count: 1; 
+  animation-timing-function: linear;
+}
+
+@keyframes spinBall {
+	from { transform: rotate(270deg); }
+	to { transform: rotate(1710deg); }
 }

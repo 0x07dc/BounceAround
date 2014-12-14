@@ -466,6 +466,17 @@ var $$ = Object.create(null);
         throw H.wrapException(P.ArgumentError$(other));
       return receiver + other;
     },
+    $mod: function(receiver, other) {
+      var result = receiver % other;
+      if (result === 0)
+        return 0;
+      if (result > 0)
+        return result;
+      if (other < 0)
+        return result - other;
+      else
+        return result + other;
+    },
     _tdivFast$1: function(receiver, other) {
       return (receiver | 0) === receiver ? receiver / other | 0 : this.toInt$0(receiver / other);
     },
@@ -2898,13 +2909,19 @@ var $$ = Object.create(null);
       t2 = t3 + -5;
       t1.top = t2;
     }
+    t3 = $.ballObject_colorIdx;
+    t4 = $.get$ballObject_colorGradient();
+    t3 = C.JSInt_methods.$mod(t3 + 1, t4.length);
+    $.ballObject_colorIdx = t3;
+    t1.color = t4[t3];
     t3 = t1.ballElement.style;
     J.getInterceptor$x(t3).set$top(t3, "" + t2 + "px");
     C.CssStyleDeclaration_methods.set$left(t3, "" + t1.left + "px");
+    C.CssStyleDeclaration_methods.set$background(t3, "radial-gradient(circle at 100px 100px, rgb(" + J.toString$0(t1.color[0]) + "," + J.toString$0(t1.color[1]) + "," + J.toString$0(t1.color[2]) + "), #000)");
     C.Window_methods.get$animationFrame(window).then$1(S.animLoop$closure());
   }, "call$1", "animLoop$closure", 2, 0, 1],
   ballObject: {
-    "^": "Object;left,top,size,dir,ballElement",
+    "^": "Object;left,top,size,color,dir,ballElement",
     ballObject$1: function(domElement) {
       var t1, t2;
       this.ballElement = domElement;
@@ -2912,6 +2929,58 @@ var $$ = Object.create(null);
       t2 = this.size;
       J.getInterceptor$x(t1).set$width(t1, C.JSInt_methods.toString$0(t2) + "px");
       C.CssStyleDeclaration_methods.set$height(t1, C.JSInt_methods.toString$0(t2) + "px");
+      C.CssStyleDeclaration_methods.set$background(t1, "radial-gradient(circle at 100px 100px, rgb(" + J.toString$0(this.color[0]) + "," + J.toString$0(this.color[1]) + "," + J.toString$0(this.color[2]) + "), #000)");
+    },
+    static: {"^": "ballObject_colorIdx,ballObject_colorGradient"}
+  },
+  ColorManagement: {
+    "^": "Object;",
+    genGradientList$0: function() {
+      var intColors, i, nextColor;
+      intColors = [];
+      for (i = 0; i < 256; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = 255;
+        nextColor[1] = i;
+        nextColor[2] = 0;
+        intColors.push(nextColor);
+      }
+      for (i = 0; i < 256; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = 255 - i;
+        nextColor[1] = 255;
+        nextColor[2] = 0;
+        intColors.push(nextColor);
+      }
+      for (i = 0; i < 256; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = 0;
+        nextColor[1] = 255;
+        nextColor[2] = i;
+        intColors.push(nextColor);
+      }
+      for (i = 0; i < 256; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = 0;
+        nextColor[1] = 255 - i;
+        nextColor[2] = 255;
+        intColors.push(nextColor);
+      }
+      for (i = 0; i < 256; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = i;
+        nextColor[1] = 0;
+        nextColor[2] = 255;
+        intColors.push(nextColor);
+      }
+      for (i = 0; i < 255; ++i) {
+        nextColor = Array(3);
+        nextColor[0] = 255;
+        nextColor[1] = 0;
+        nextColor[2] = 255 - i;
+        intColors.push(nextColor);
+      }
+      return intColors;
     }
   }
 },
@@ -5355,6 +5424,9 @@ var $$ = Object.create(null);
   },
   CssStyleDeclarationBase: {
     "^": "Object;",
+    set$background: function(receiver, value) {
+      this.setProperty$3(receiver, "background", value, "");
+    },
     set$height: function(receiver, value) {
       this.setProperty$3(receiver, "height", value, "");
     },
@@ -5838,6 +5910,7 @@ $.prototypeForTagFunction = null;
 $.dispatchRecordsForInstanceTags = null;
 $.interceptorsForUncacheableTags = null;
 $.initNativeDispatchFlag = null;
+$.ballObject_colorIdx = 0;
 $.printToZone = null;
 $._nextCallback = null;
 $._lastCallback = null;
@@ -5921,9 +5994,21 @@ Isolate.$lazy($, "undefinedLiteralPropertyPattern", "TypeErrorDecoder_undefinedL
   }());
 });
 Isolate.$lazy($, "ball", "ball", "get$ball", function() {
-  var t1 = new S.ballObject(0, 0, 140, ["right", "down"], null);
-  t1.ballObject$1(document.querySelector("#ball"));
-  return t1;
+  var t1, t2, t3;
+  t1 = document.querySelector("#ball");
+  t2 = $.get$ballObject_colorGradient();
+  t3 = $.ballObject_colorIdx;
+  if (t3 >= t2.length)
+    return H.ioore(t2, t3);
+  t3 = new S.ballObject(0, 0, 140, t2[t3], ["right", "down"], null);
+  t3.ballObject$1(t1);
+  return t3;
+});
+Isolate.$lazy($, "colorManagement", "colorManagement", "get$colorManagement", function() {
+  return new S.ColorManagement();
+});
+Isolate.$lazy($, "colorGradient", "ballObject_colorGradient", "get$ballObject_colorGradient", function() {
+  return $.get$colorManagement().genGradientList$0();
 });
 Isolate.$lazy($, "scheduleImmediateClosure", "_AsyncRun_scheduleImmediateClosure", "get$_AsyncRun_scheduleImmediateClosure", function() {
   return P._AsyncRun__initializeScheduleImmediate();
