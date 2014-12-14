@@ -1,0 +1,7 @@
+name: bounce_around
+version: 0.0.1
+author: Recursion <recursionatlantic@gmail.com>
+description: A simple animation with a CSS ball that bounces around the screen
+homepage: http://recursionatlantic.com
+dependencies:
+  browser: '>=0.10.0+2 <0.11.0'
