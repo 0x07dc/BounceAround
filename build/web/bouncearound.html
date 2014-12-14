@@ -8,12 +8,135 @@
     
     <script async type="application/dart" src="bouncearound.dart"></script>
     <script async src="packages/browser/dart.js"></script>
+    <script sync src="peer.min.js"></script>
     
     <link rel="stylesheet" href="bouncearound.css">
+    <style>
+      div#buttons {
+        margin: 0 0 1em 0;
+      }
+      h1 {
+        margin: 0 0 1em 0;
+      }
+      h2 {
+        margin: 0 0 0.5em 0;
+      }
+      textarea {
+        color: #0f1;
+        font-family: 'Courier New', monospace;
+        font-size: 2em;
+        height: 7.0em;
+        padding: 0em;
+        width: 100%;
+        height: 100%;
+        margin:0;
+        background-color: rgba(255,0,255,0.5);
+      }
+    </style>
   </head>
   <body>
-    
-    <div id="ball"></div>
+ 
 
+ 
+
+<div id="connectTo" hidden>
+Who U wan conn to  homies!?<br>
+<input type="text" id="connToId" vale="!Enter Id Yo!">
+</div>
+  
+  
+  
+    <div id="ball"></div>
+    <div id="chatBox">
+      <table>
+        <tr><td><textarea id="dataChannelReceive" disabled></textarea></td></tr>
+        <tr><td id="inputText"><input type="text" id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></td></tr>
+        <tr><td id="buttons">
+            <button id="connButton">Connect</button>
+            <button id="sendButton">Send</button>
+        </td></tr>
+      </table>
+     <script>
+     
+     	var rand = randomstring(5).toUpperCase();
+     	var chatButtonsDiv = document.getElementById('buttons');
+        chatButtonsDiv.innerHTML += "Id: "+rand;
+        // No API key required when not using cloud server
+        window.peer = new Peer(rand, {host: 'recursionatlantic.com', port: 9000, path: '/'});
+		// You can pick your own id or omit the id if you want to get a random one from the server.
+		
+		
+        
+        var sendField = document.getElementById('dataChannelSend');
+        var dispMsg = document.getElementById('dataChannelReceive');
+        var sendButton = document.getElementById('sendButton');
+        var connButton = document.getElementById('connButton');
+        var connToBox = document.getElementById('connectTo');
+        
+        var connToId = document.getElementById('connToId');
+        connToId.addEventListener('keypress',function(e){
+          if(e.which==13)
+            connect(connToId.value.toUpperCase());
+          
+        },true);
+        
+        
+        
+        
+        function sendMsg(){
+          conn.send(sendField.value);
+          console.log('sent'+sendField.value);
+        };
+        sendButton.onclick = sendMsg;
+        
+        function connectToBox(){
+          connToBox.hidden = false;
+          
+        }
+        
+        function connect(id){
+          console.log('connecting to: '+id);
+          conn = window.peer.connect(id);
+          connToBox.hidden = true;
+		  if(!conn){
+		    alert('Yo man, yo fren not on or id is wrong');
+		    return 0;
+		  }
+		  
+		  console.log('connection good');
+          conn.on('open', function(){
+            conn.send('Connected Yo!');
+            sendField.disabled = false;
+          });
+          peer.on('connection', function(conn) {
+             conn.on('data', function(data){
+               // Will print msg
+               dispMsg.value = data;
+               console.log(data);
+             });
+           });
+
+        };
+        connButton.addEventListener('click',
+            connectToBox,
+            true);
+        
+        
+        function randomstring(L){
+            var s= '';
+            var randomchar=function(){
+            	var n= Math.floor(Math.random()*62);
+            	if(n<10) return n; //1-10
+            	if(n<36) return String.fromCharCode(n+55); //A-Z
+            	return String.fromCharCode(n+61); //a-z
+            }
+            while(s.length< L) s+= randomchar();
+            return s;
+        }
+       
+     
+     </script>
+      
+    </div>
   </body>
 </html>

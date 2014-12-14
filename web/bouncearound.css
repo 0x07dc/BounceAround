@@ -6,6 +6,7 @@ body {
   font-weight: normal;
   line-height: 1.2em;
   margin: 15px;
+  overflow:hidden;
 }
 
 h1, p {
@@ -38,5 +39,49 @@ h1, p {
 }
 
 #chatBox {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: rgba(255,0,255,.5);
+  height: 25%;
   
+}
+
+#chatBox table{
+  height:100%;
+  width:100%;
+  border:1px solid yellow;
+}
+
+#chatBox table tr{
+  border:1px solid yellow;
+}
+
+#chatBox table td{
+  border:1px solid yellow;
+}
+
+#chatBox table td#inputText{
+  border:1px solid yellow;
+  height:15px;
+}
+#chatBox table td#buttons{
+  border:1px solid yellow;
+  height:15px;
+  text-align:center;
+}
+
+#chatBox table td#inputText input{
+  border:1px solid yellow;
+  height:15px;
+  width:100%;
+}
+
+#connectTo {
+  margin:auto;
+  position:relative;
+  width:50%;
+  height:50%;
+  background-color:rgba(255,255,0,0.5);
 }
